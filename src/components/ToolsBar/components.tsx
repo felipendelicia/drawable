@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import theme from "../../data/theme";
+import { ITool } from "./types";
 
 export const Container = styled.div`
     position: fixed;
@@ -10,14 +12,17 @@ export const Container = styled.div`
 `
 
 export const Root = styled.div`
-    width: 80vw;
     padding: 10px 20px;
-    border-radius: 12px;
+    border-radius: ${theme.borderRadius};
     background-color: #8b8b8b;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: 1em;
 `
 
-export const Tool = styled.p`
+export const Tool = styled.p<ITool>`
+    padding: 5px 40px;
+    border-radius: ${theme.borderRadius};
     font-size: 1.5em;
+    background-color: ${props => props.active ? '#c2c2c2' : null};
 `
