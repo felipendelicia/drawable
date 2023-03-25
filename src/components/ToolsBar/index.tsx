@@ -1,11 +1,18 @@
-import { Container, Root } from "./components";
+import tools from "../../data/tools";
+import { Container, Root, Tool } from "./components";
 
 export default function ToolBar() {
   return (
     <Container>
-        <Root>
-            a
-        </Root>
+      <Root>
+        {
+          tools.map((tool, i) => {
+            return (
+              <Tool key={i} id={tool.name}>{tool.icon}</Tool>
+            )
+          })
+        }
+      </Root>
     </Container>
   )
 }

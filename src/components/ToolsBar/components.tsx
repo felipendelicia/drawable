@@ -14,4 +14,10 @@ export const Root = styled.div`
     padding: 10px 20px;
     border-radius: 12px;
     background-color: #8b8b8b;
+    display: flex;
+    justify-content: space-evenly;
+`
+
+export const Tool = styled.p`
+    font-size: 1.5em;
 `
