@@ -54,6 +54,38 @@ export default function Canvas() {
     setIsDrawing(false);
   };
 
+  const handleTouchStart = (event: React.TouchEvent<HTMLCanvasElement>) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    setIsDrawing(true);
+    const { clientX, clientY } = touch;
+    const element: IElement = ctx.currentTool.func(
+      clientX,
+      clientY,
+      clientX,
+      clientY
+    );
+    setCtx(setElements(ctx, element));
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLCanvasElement>) => {
+    event.preventDefault();
+    if (!isDrawing) return;
+    const touch = event.touches[0];
+    const { clientX, clientY } = touch;
+    const index = ctx.elements.length - 1;
+    const { x1, y1 } = ctx.elements[index];
+    const updatedElement = ctx.currentTool.func(x1, y1, clientX, clientY);
+    const elementsCopy = [...ctx.elements];
+    elementsCopy[index] = updatedElement;
+    setCtx({ currentTool: ctx.currentTool, elements: elementsCopy });
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent<HTMLCanvasElement>) => {
+    event.preventDefault();
+    setIsDrawing(false);
+  };
+
   return (
     <CanvasRoot
       id="canvas"
@@ -61,6 +93,9 @@ export default function Canvas() {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       width={window.innerWidth}
       height={window.innerHeight - 20}
     >
