@@ -25,6 +25,7 @@ export default function Canvas() {
   const handleMouseDown = (
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
+    event.preventDefault();
     setIsDrawing(true);
     const { clientX, clientY } = event;
 
@@ -40,6 +41,7 @@ export default function Canvas() {
   const handleMouseMove = (
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
+    event.preventDefault();
     if (!isDrawing) return;
     const { clientX, clientY } = event;
     const index = ctx.elements.length - 1;
@@ -54,48 +56,16 @@ export default function Canvas() {
     setIsDrawing(false);
   };
 
-  const handleTouchStart = (event: React.TouchEvent<HTMLCanvasElement>) => {
-    event.preventDefault();
-    const touch = event.touches[0];
-    setIsDrawing(true);
-    const { clientX, clientY } = touch;
-    const element: IElement = ctx.currentTool.func(
-      clientX,
-      clientY,
-      clientX,
-      clientY
-    );
-    setCtx(setElements(ctx, element));
-  };
-
-  const handleTouchMove = (event: React.TouchEvent<HTMLCanvasElement>) => {
-    event.preventDefault();
-    if (!isDrawing) return;
-    const touch = event.touches[0];
-    const { clientX, clientY } = touch;
-    const index = ctx.elements.length - 1;
-    const { x1, y1 } = ctx.elements[index];
-    const updatedElement = ctx.currentTool.func(x1, y1, clientX, clientY);
-    const elementsCopy = [...ctx.elements];
-    elementsCopy[index] = updatedElement;
-    setCtx({ currentTool: ctx.currentTool, elements: elementsCopy });
-  };
-
-  const handleTouchEnd = (event: React.TouchEvent<HTMLCanvasElement>) => {
-    event.preventDefault();
-    setIsDrawing(false);
-  };
-
   return (
     <CanvasRoot
       id="canvas"
       ref={canvas}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      onMouseDown={() => handleMouseDown}
+      onMouseMove={() => handleMouseMove}
+      onMouseUp={() => handleMouseUp}
+      onTouchStart={() => handleMouseDown}
+      onTouchMove={() => handleMouseMove}
+      onTouchEnd={() => handleMouseUp}
       width={window.innerWidth}
       height={window.innerHeight - 20}
     >
