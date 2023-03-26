@@ -3,7 +3,7 @@ import theme from "../../data/theme";
 import { ITool } from "./types";
 
 export const Container = styled.div`
-  background-color: #a4a4a4;
+  background-color: #000000;
   width: 100vw;
   position: fixed;
   bottom: 0;
@@ -14,8 +14,9 @@ export const Container = styled.div`
 `;
 
 export const Tool = styled.p<ITool>`
+  color: #fff;
   padding: 5px 40px;
   border-radius: ${theme.borderRadius};
   font-size: 1.5em;
-  background-color: ${(props) => (props.active ? "#c2c2c2" : null)};
+  border: ${(props) => (props.active ? "1px solid #c2c2c2" : null)};
 `;
