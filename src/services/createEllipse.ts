@@ -4,7 +4,7 @@ import { RoughGenerator } from "roughjs/bin/generator";
 import { setElements } from "../context";
 import { Ctx } from "../types";
 
-interface IEllipseElement {
+export interface IEllipseElement {
     roughElement: Drawable;
     initialX: number;
     initialY: number;

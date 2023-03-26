@@ -15,7 +15,7 @@ export const Container = styled.div`
 
 export const Tool = styled.p<ITool>`
   color: #fff;
-  padding: 5px 40px;
+  padding: 5px 30px;
   border-radius: ${theme.borderRadius};
   font-size: 1.5em;
   border: ${(props) => (props.active ? "1px solid #c2c2c2" : null)};

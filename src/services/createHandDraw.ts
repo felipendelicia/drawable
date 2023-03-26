@@ -4,7 +4,7 @@ import { RoughGenerator } from "roughjs/bin/generator";
 import { setElements } from "../context";
 import { Ctx } from "../types";
 
-interface IHandDrawElement {
+export interface IHandDrawElement {
     roughElement: Drawable;
     path: [[number]]
 }

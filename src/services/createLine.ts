@@ -4,7 +4,7 @@ import { RoughGenerator } from "roughjs/bin/generator"
 import { setElements } from "../context"
 import { Ctx } from "../types"
 
-interface ILineElement {
+export interface ILineElement {
     roughElement: Drawable;
     x1: number;
     y1: number;

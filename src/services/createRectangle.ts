@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from "react"
 import { Ctx } from "../types"
 import { Drawable } from "roughjs/bin/core";
 
-interface IRectangleElement {
+export interface IRectangleElement {
     roughElement: Drawable;
     x1: number;
     y1: number;
