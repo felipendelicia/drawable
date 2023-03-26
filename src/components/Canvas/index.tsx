@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { RoughCanvas } from "roughjs/bin/canvas";
-import { MainContext, setElements } from "../../context";
-import { IElement } from "../../types";
+import { MainContext } from "../../context";
 import { CanvasRoot } from "./components";
 
 export default function Canvas() {
@@ -16,7 +15,7 @@ export default function Canvas() {
 
       const roughCanvas = new RoughCanvas(canvas.current)
 
-      ctx.elements.forEach(({roughElement}) => {
+      ctx.elements.forEach(({ roughElement }) => {
         roughCanvas.draw(roughElement)
       })
     }
@@ -28,8 +27,7 @@ export default function Canvas() {
     setIsDrawing(true);
     const { clientX, clientY } = event
 
-    const element: IElement = ctx.currentTool.func(clientX, clientY, clientX, clientY);
-    setCtx(setElements(ctx, element))
+    ctx.currentTool.func.mouseDown(clientX, clientY, ctx, setCtx)
   };
 
   const handleMouseMove = (
@@ -37,12 +35,7 @@ export default function Canvas() {
   ) => {
     if (!isDrawing) return;
     const { clientX, clientY } = event
-    const index = ctx.elements.length - 1
-    const { x1, y1 } = ctx.elements[index]
-    const updatedElement = ctx.currentTool.func(x1, y1, clientX, clientY)
-    const elementsCopy = [...ctx.elements]
-    elementsCopy[index] = updatedElement
-    setCtx({currentTool:ctx.currentTool, elements:elementsCopy})
+    ctx.currentTool.func.mouseMove(clientX, clientY, ctx, setCtx)
   };
 
   const handleMouseUp = () => {

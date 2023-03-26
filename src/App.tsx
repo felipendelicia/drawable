@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Canvas from "./components/Canvas";
+import Message from "./components/Message";
 import ToolBar from "./components/ToolsBar";
 import { INITIAL_CTX } from "./constants";
 import { MainContext } from "./context";
@@ -12,6 +13,7 @@ function App() {
       <div className="App">
         <Canvas />
         <ToolBar />
+        <Message message="For now, only available for desktop"></Message>
       </div>
     </MainContext.Provider>
   );
