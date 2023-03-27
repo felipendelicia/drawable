@@ -30,6 +30,16 @@ class Line extends DrawElement {
         return Math.abs(offset) < 1
     }
 
+    move(moveCoord: ICoord) {
+        const dx = moveCoord.x - this.initCoord.x;
+        const dy = moveCoord.y - this.initCoord.y;
+        this.coord2.x += dx;
+        this.coord2.y += dy;
+        this.initCoord.x += dx;
+        this.initCoord.y += dy;
+        this.element = this.create(this.id, this.initCoord, this.coord2);
+
+    }
 }
 
 export default Line

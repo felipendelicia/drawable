@@ -30,10 +30,14 @@ export default function Canvas() {
     const { clientX, clientY } = event
     if (ctx.currentTool.name === 'selection') {
 
-      const element = getElementAtPosition({x: clientX, y:clientY}, ctx.elements)
+      const element = getElementAtPosition({ x: clientX, y: clientY }, ctx.elements)
 
       if (element) {
-        setSelectedElement(element)
+        const offset = {
+          x: clientX - element.initCoord.x,
+          y: clientY - element.initCoord.y,
+        }
+        setSelectedElement({ element, offset })
         setAction('moving')
 
       } else {
@@ -46,7 +50,7 @@ export default function Canvas() {
       const element = new ctx.currentTool.class(id, { x: clientX, y: clientY })
       setCtx(setElements(ctx, element))
       setAction('drawing');
-      
+
     }
   };
 
@@ -63,6 +67,15 @@ export default function Canvas() {
       setCtx({ currentTool: ctx.currentTool, elements: elementsCopy })
 
     } else if (action === 'moving') {
+      const index = selectedElement.length - 1
+      const correctedOffset = {
+        x: clientX - selectedElement.offset.x,
+        y: clientY - selectedElement.offset.y,
+      }
+      selectedElement.element.move(correctedOffset)
+      const elementsCopy = [...ctx.elements]
+      elementsCopy[index] = selectedElement
+      setCtx({ currentTool: ctx.currentTool, elements: elementsCopy })
 
     }
   };

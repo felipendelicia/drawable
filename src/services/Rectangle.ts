@@ -37,6 +37,18 @@ class Rectangle extends DrawElement {
         const maxY = Math.max(this.initCoord.y, this.coord2.y)
         return clickedCoord.x >= minX && clickedCoord.x <= maxX && clickedCoord.y >= minY && clickedCoord.y <= maxY
     }
+
+    move(moveCoord: ICoord) {
+        this.initCoord = moveCoord
+        const newCoord2 = {
+            x: this.width + moveCoord.x,
+            y: this.height + moveCoord.y,
+        }
+        this.coord2 = newCoord2;
+        this.width = this.coord2.x - this.initCoord.x;
+        this.height = this.coord2.y - this.initCoord.y;
+        this.element = this.create(this.id, this.initCoord, this.width, this.height)
+    }
 }
 
 export default Rectangle
