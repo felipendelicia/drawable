@@ -29,16 +29,24 @@ export default function Canvas() {
   ) => {
     const { clientX, clientY } = event
     if (ctx.currentTool.name === 'selection') {
-      const element = getElementAtPosition(clientX, clientY, ctx.elements)
+
+      const element = getElementAtPosition({x: clientX, y:clientY}, ctx.elements)
+
       if (element) {
         setSelectedElement(element)
         setAction('moving')
+
+      } else {
+        setSelectedElement(null)
+
       }
+
     } else {
       const id = ctx.elements.length
       const element = new ctx.currentTool.class(id, { x: clientX, y: clientY })
       setCtx(setElements(ctx, element))
       setAction('drawing');
+      
     }
   };
 

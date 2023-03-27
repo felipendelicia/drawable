@@ -1,5 +1,6 @@
 import { Drawable } from "roughjs/bin/core";
 import { RoughGenerator } from "roughjs/bin/generator";
+import { ADMITED_OFFSET } from "../constants";
 import { ICoord } from "../types";
 import DrawElement from "./Element";
 
@@ -34,6 +35,11 @@ class Ellipse extends DrawElement {
         this.height = Math.abs(newCoord2.y - this.initial.y);
         this.center = newCenter
         this.element = this.create(this.id, newCenter, this.width, this.height, this.initial);
+    }
+
+    isWithinElement(clickedCoord: ICoord) {
+        const offset = Math.pow(clickedCoord.x - this.center.x, 2) / Math.pow(this.width / 2, 2) + Math.pow(clickedCoord.y - this.center.y, 2) / Math.pow(this.height / 2, 2)
+        return offset <= ADMITED_OFFSET
     }
 }
 

@@ -29,6 +29,14 @@ class Rectangle extends DrawElement {
         this.height = this.coord2.y - this.initCoord.y;
         this.element = this.create(this.id, this.initCoord, this.width, this.height)
     }
+
+    isWithinElement(clickedCoord: ICoord) {
+        const minX = Math.min(this.initCoord.x, this.coord2.x)
+        const maxX = Math.max(this.initCoord.x, this.coord2.x)
+        const minY = Math.min(this.initCoord.y, this.coord2.y)
+        const maxY = Math.max(this.initCoord.y, this.coord2.y)
+        return clickedCoord.x >= minX && clickedCoord.x <= maxX && clickedCoord.y >= minY && clickedCoord.y <= maxY
+    }
 }
 
 export default Rectangle

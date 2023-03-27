@@ -2,6 +2,7 @@ import { Drawable } from "roughjs/bin/core";
 import { RoughGenerator } from "roughjs/bin/generator";
 import { ICoord } from "../types";
 import DrawElement from "./Element";
+import { distance } from "./getElementAtPosition";
 
 class Line extends DrawElement {
     coord2: ICoord;
@@ -13,7 +14,7 @@ class Line extends DrawElement {
         this.element = this.create(this.id, this.initCoord, this.coord2)
     }
 
-    create(id: number, initCoord:ICoord, coord2:ICoord) {
+    create(id: number, initCoord: ICoord, coord2: ICoord) {
         const generator = new RoughGenerator()
         const roughElement = generator.line(initCoord.x, initCoord.y, coord2.x, coord2.y)
         return { id, initCoord, coord2, roughElement }
@@ -22,6 +23,11 @@ class Line extends DrawElement {
     update(newCoord2: ICoord) {
         this.coord2 = newCoord2
         this.element = this.create(this.id, this.initCoord, this.coord2)
+    }
+
+    isWithinElement(clickedCoord: ICoord) {
+        const offset = distance(this.initCoord, this.coord2) - (distance(this.initCoord, clickedCoord) + distance(this.coord2, clickedCoord))
+        return Math.abs(offset) < 1
     }
 
 }
