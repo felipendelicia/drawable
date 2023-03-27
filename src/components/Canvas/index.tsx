@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { RoughCanvas } from "roughjs/bin/canvas";
-import { MainContext } from "../../context";
+import { MainContext, setElements } from "../../context";
 import { getElementAtPosition } from "../../services/getElementAtPosition";
 import { CanvasRoot } from "./components";
 import { IAction } from "./types";
@@ -9,6 +9,7 @@ export default function Canvas() {
   const { ctx, setCtx } = useContext(MainContext)
   const canvas = useRef<HTMLCanvasElement>(null);
   const [action, setAction] = useState<IAction>('none');
+  const [selectedElement, setSelectedElement] = useState<any>(null);
 
   useEffect(() => {
     if (canvas.current) {
@@ -17,8 +18,8 @@ export default function Canvas() {
 
       const roughCanvas = new RoughCanvas(canvas.current)
 
-      ctx.elements.forEach(({ roughElement }) => {
-        roughCanvas.draw(roughElement)
+      ctx.elements.forEach(({ element }) => {
+        roughCanvas.draw(element.roughElement)
       })
     }
   }, [ctx]);
@@ -28,11 +29,15 @@ export default function Canvas() {
   ) => {
     const { clientX, clientY } = event
     if (ctx.currentTool.name === 'selection') {
-      // if we are selecting => setAction('selection')
       const element = getElementAtPosition(clientX, clientY, ctx.elements)
-      if (element) setAction('selection')
+      if (element) {
+        setSelectedElement(element)
+        setAction('moving')
+      }
     } else {
-      ctx.currentTool.func.mouseDown(clientX, clientY, ctx, setCtx)
+      const id = ctx.elements.length
+      const element = new ctx.currentTool.class(id, { x: clientX, y: clientY })
+      setCtx(setElements(ctx, element))
       setAction('drawing');
     }
   };
@@ -40,9 +45,18 @@ export default function Canvas() {
   const handleMouseMove = (
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
-    if (action !== 'drawing') return;
     const { clientX, clientY } = event
-    ctx.currentTool.func.mouseMove(clientX, clientY, ctx, setCtx)
+    if (action === 'drawing') {
+      const index = ctx.elements.length - 1
+      const element = ctx.elements[index]
+      element.update({ x: clientX, y: clientY })
+      const elementsCopy = [...ctx.elements]
+      elementsCopy[index] = element
+      setCtx({ currentTool: ctx.currentTool, elements: elementsCopy })
+
+    } else if (action === 'moving') {
+
+    }
   };
 
   const handleMouseUp = () => {
