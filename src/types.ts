@@ -3,7 +3,7 @@ import { Dispatch, ReactElement, SetStateAction } from "react";
 export interface ICurrentTool {
     name: string,
     icon: ReactElement,
-    func: { mainFunc: any, mouseDown: any, mouseMove: any, mouseUp: any },
+    func: any,
 }
 
 

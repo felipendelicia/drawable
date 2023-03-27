@@ -1,0 +1,1 @@
+export type IAction = 'drawing' | 'selection' | 'none'

@@ -1,12 +1,14 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { RoughCanvas } from "roughjs/bin/canvas";
 import { MainContext } from "../../context";
+import { getElementAtPosition } from "../../services/getElementAtPosition";
 import { CanvasRoot } from "./components";
+import { IAction } from "./types";
 
 export default function Canvas() {
   const { ctx, setCtx } = useContext(MainContext)
   const canvas = useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
+  const [action, setAction] = useState<IAction>('none');
 
   useEffect(() => {
     if (canvas.current) {
@@ -24,22 +26,27 @@ export default function Canvas() {
   const handleMouseDown = (
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
-    setIsDrawing(true);
     const { clientX, clientY } = event
-
-    ctx.currentTool.func.mouseDown(clientX, clientY, ctx, setCtx)
+    if (ctx.currentTool.name === 'selection') {
+      // if we are selecting => setAction('selection')
+      const element = getElementAtPosition(clientX, clientY, ctx.elements)
+      if (element) setAction('selection')
+    } else {
+      ctx.currentTool.func.mouseDown(clientX, clientY, ctx, setCtx)
+      setAction('drawing');
+    }
   };
 
   const handleMouseMove = (
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
-    if (!isDrawing) return;
+    if (action !== 'drawing') return;
     const { clientX, clientY } = event
     ctx.currentTool.func.mouseMove(clientX, clientY, ctx, setCtx)
   };
 
   const handleMouseUp = () => {
-    setIsDrawing(false)
+    setAction('none')
   };
 
   return (
