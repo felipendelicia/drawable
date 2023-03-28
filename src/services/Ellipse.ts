@@ -5,47 +5,87 @@ import { ICoord } from "../types";
 import DrawElement from "./Element";
 
 class Ellipse extends DrawElement {
-    center: ICoord;
+  cornerCoord: ICoord;
+  width: number;
+  height: number;
+  element: {
+    id: number;
+    cornerCoord: ICoord;
+    initCoord: ICoord;
     width: number;
     height: number;
-    element: { id: number, initCoord: ICoord, center: ICoord, width: number, height: number, roughElement: Drawable }
+    roughElement: Drawable;
+  };
 
-    constructor(id: number, initCoord: ICoord) {
-        super(id, initCoord);
-        this.initCoord = initCoord;
-        this.center = initCoord;
-        this.width = 0;
-        this.height = 0;
-        this.element = this.create(this.id, this.center, this.width, this.height, this.initCoord)
+  constructor(id: number, initCoord: ICoord) {
+    super(id, initCoord);
+    this.cornerCoord = initCoord;
+    this.initCoord = initCoord;
+    this.width = 0;
+    this.height = 0;
+    this.element = this.create(
+      this.id,
+      this.initCoord,
+      this.width,
+      this.height,
+      this.cornerCoord
+    );
+  }
+
+  create(
+    id: number,
+    initCoord: ICoord,
+    width: number,
+    height: number,
+    cornerCoord: ICoord
+  ) {
+    const generator = new RoughGenerator();
+    const roughElement = generator.ellipse(initCoord.x, initCoord.y, width, height);
+    return { id, cornerCoord, initCoord, width, height, roughElement };
+  }
+
+  update(newCoord2: ICoord) {
+    const newCenter = {
+      x: this.cornerCoord.x + (newCoord2.x - this.initCoord.x) / 2,
+      y: this.cornerCoord.y + (newCoord2.y - this.initCoord.y) / 2,
+    };
+    this.width = Math.abs(newCoord2.x - this.cornerCoord.x);
+    this.height = Math.abs(newCoord2.y - this.cornerCoord.y);
+    this.initCoord = newCenter;
+    this.element = this.create(
+      this.id,
+      this.initCoord,
+      this.width,
+      this.height,
+      this.cornerCoord
+    );
+  }
+
+  isWithinElement(clickedCoord: ICoord) {
+    const offset =
+      Math.pow(clickedCoord.x - this.initCoord.x, 2) /
+        Math.pow(this.width / 2, 2) +
+      Math.pow(clickedCoord.y - this.initCoord.y, 2) /
+        Math.pow(this.height / 2, 2);
+    return offset <= ADMITED_OFFSET;
+  }
+
+  move(moveCoord: ICoord) {
+    this.cornerCoord = moveCoord
+    const newCenter = {
+        x:  moveCoord.x,
+        y:  moveCoord.y,
     }
+    this.initCoord = newCenter;
 
-    create(id: number, center: ICoord, width: number, height: number, initCoord: ICoord) {
-        const generator = new RoughGenerator()
-        const roughElement = generator.ellipse(center.x, center.y, width, height)
-        return { id, initCoord, center, width, height, roughElement }
-    }
-
-    update(newCoord2: ICoord) {
-        const newCenter = {
-            x: this.initCoord.x + ((newCoord2.x - this.initCoord.x) / 2),
-            y: this.initCoord.y + ((newCoord2.y - this.initCoord.y) / 2)
-        }
-        this.width = Math.abs(newCoord2.x - this.initCoord.x);
-        this.height = Math.abs(newCoord2.y - this.initCoord.y);
-        this.center = newCenter
-        this.element = this.create(this.id, newCenter, this.width, this.height, this.initCoord);
-    }
-
-    isWithinElement(clickedCoord: ICoord) {
-        const offset = Math.pow(clickedCoord.x - this.center.x, 2) / Math.pow(this.width / 2, 2) + Math.pow(clickedCoord.y - this.center.y, 2) / Math.pow(this.height / 2, 2)
-        return offset <= ADMITED_OFFSET
-    }
-
-    move(moveCoord: ICoord) {
-        this.element = this.create(this.id, this.center, this.width, this.height, this.initCoord )
-    }
-
+    this.element = this.create(
+      this.id, //no
+      this.initCoord,
+      this.width, //no
+      this.height, //no
+      this.cornerCoord
+    );
+  }
 }
 
-
-export default Ellipse
+export default Ellipse;

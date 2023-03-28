@@ -36,7 +36,8 @@ export default function Canvas() {
         const offset = {
           x: clientX - element.initCoord.x,
           y: clientY - element.initCoord.y,
-        }
+        } 
+
         setSelectedElement({ element, offset })
         setAction('moving')
 
