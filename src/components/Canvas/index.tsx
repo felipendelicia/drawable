@@ -1,12 +1,15 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { RoughCanvas } from "roughjs/bin/canvas";
-import { MainContext } from "../../context";
+import { MainContext, setElements } from "../../context";
+import { getElementAtPosition } from "../../services/getElementAtPosition";
 import { CanvasRoot } from "./components";
+import { IAction } from "./types";
 
 export default function Canvas() {
   const { ctx, setCtx } = useContext(MainContext)
   const canvas = useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
+  const [action, setAction] = useState<IAction>('none');
+  const [selectedElement, setSelectedElement] = useState<any>(null);
 
   useEffect(() => {
     if (canvas.current) {
@@ -15,8 +18,8 @@ export default function Canvas() {
 
       const roughCanvas = new RoughCanvas(canvas.current)
 
-      ctx.elements.forEach(({ roughElement }) => {
-        roughCanvas.draw(roughElement)
+      ctx.elements.forEach(({ element }) => {
+        roughCanvas.draw(element.roughElement)
       })
     }
   }, [ctx]);
@@ -24,22 +27,62 @@ export default function Canvas() {
   const handleMouseDown = (
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
-    setIsDrawing(true);
     const { clientX, clientY } = event
+    if (ctx.currentTool.name === 'selection') {
 
-    ctx.currentTool.func.mouseDown(clientX, clientY, ctx, setCtx)
+      const element = getElementAtPosition({ x: clientX, y: clientY }, ctx.elements)
+
+      if (element) {
+        const offset = {
+          x: clientX - element.initCoord.x,
+          y: clientY - element.initCoord.y,
+        } 
+
+        setSelectedElement({ element, offset })
+        setAction('moving')
+
+      } else {
+        setSelectedElement(null)
+
+      }
+
+    } else {
+      const id = ctx.elements.length
+      const element = new ctx.currentTool.class(id, { x: clientX, y: clientY })
+      setCtx(setElements(ctx, element))
+      setAction('drawing');
+
+    }
   };
 
   const handleMouseMove = (
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
-    if (!isDrawing) return;
     const { clientX, clientY } = event
-    ctx.currentTool.func.mouseMove(clientX, clientY, ctx, setCtx)
+    if (action === 'drawing') {
+      const index = ctx.elements.length - 1
+      const element = ctx.elements[index]
+      element.update({ x: clientX, y: clientY })
+      const elementsCopy = [...ctx.elements]
+      elementsCopy[index] = element
+      setCtx({ currentTool: ctx.currentTool, elements: elementsCopy })
+
+    } else if (action === 'moving') {
+      const index = selectedElement.length - 1
+      const correctedOffset = {
+        x: clientX - selectedElement.offset.x,
+        y: clientY - selectedElement.offset.y,
+      }
+      selectedElement.element.move(correctedOffset)
+      const elementsCopy = [...ctx.elements]
+      elementsCopy[index] = selectedElement
+      setCtx({ currentTool: ctx.currentTool, elements: elementsCopy })
+
+    }
   };
 
   const handleMouseUp = () => {
-    setIsDrawing(false)
+    setAction('none')
   };
 
   return (

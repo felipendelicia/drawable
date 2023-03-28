@@ -3,7 +3,7 @@ import { Dispatch, ReactElement, SetStateAction } from "react";
 export interface ICurrentTool {
     name: string,
     icon: ReactElement,
-    func: { mainFunc: any, mouseDown: any, mouseMove: any, mouseUp: any },
+    class: any,
 }
 
 
@@ -15,4 +15,9 @@ export interface StateCtx {
 export interface Ctx {
     elements: any[],
     currentTool: ICurrentTool
+}
+
+export interface ICoord {
+    x: number,
+    y: number
 }

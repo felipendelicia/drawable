@@ -1,30 +1,35 @@
-import { faCircle, faLinesLeaning, faPencil, faSquare } from "@fortawesome/free-solid-svg-icons"
+import { faCircle, faLinesLeaning, faMousePointer, faPencil, faSquare } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import ellipse from "../services/createEllipse"
-import handDraw from "../services/createHandDraw"
-import line from "../services/createLine"
-import rectangle from "../services/createRectangle"
+import Ellipse from "../services/Ellipse"
+import HandDraw from "../services/HandDraw"
+import Line from "../services/Line"
+import Rectangle from "../services/Rectangle"
 
 const tools = [
     {
+        name: 'selection',
+        icon: <FontAwesomeIcon icon={faMousePointer}/>,
+        class: null
+    },
+    {
         name: 'handdraw',
         icon: <FontAwesomeIcon icon={faPencil}/>,
-        func: handDraw
+        class: HandDraw
     },
     {
         name: 'line',
         icon: <FontAwesomeIcon icon={faLinesLeaning}/>,
-        func: line
+        class: Line
     },
     {
         name: 'rectangle',
         icon: <FontAwesomeIcon icon={faSquare}/>,
-        func: rectangle
+        class: Rectangle
     },
     {
         name: 'ellipse',
         icon: <FontAwesomeIcon icon={faCircle}/>,
-        func: ellipse
+        class: Ellipse
     }
     
 ]
