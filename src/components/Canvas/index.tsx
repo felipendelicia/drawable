@@ -7,9 +7,11 @@ import { IAction } from "./types";
 
 export default function Canvas() {
   const { ctx, setCtx } = useContext(MainContext)
+
   const canvas = useRef<HTMLCanvasElement>(null);
+
   const [action, setAction] = useState<IAction>('none');
-  const [selectedElement, setSelectedElement] = useState<any>(null);
+  const [selectedElements, setSelectedElements] = useState<any>(null);
 
   useEffect(() => {
     if (canvas.current) {
@@ -33,16 +35,17 @@ export default function Canvas() {
       const element = getElementAtPosition({ x: clientX, y: clientY }, ctx.elements)
 
       if (element) {
+
         const offset = {
           x: clientX - element.initCoord.x,
           y: clientY - element.initCoord.y,
         } 
 
-        setSelectedElement({ element, offset })
+        setSelectedElements({ element, offset })
         setAction('moving')
 
       } else {
-        setSelectedElement(null)
+        setAction('selecting')
 
       }
 
@@ -60,6 +63,7 @@ export default function Canvas() {
   ) => {
     const { clientX, clientY } = event
     if (action === 'drawing') {
+
       const index = ctx.elements.length - 1
       const element = ctx.elements[index]
       element.update({ x: clientX, y: clientY })
@@ -68,15 +72,22 @@ export default function Canvas() {
       setCtx({ currentTool: ctx.currentTool, elements: elementsCopy })
 
     } else if (action === 'moving') {
-      const index = selectedElement.length - 1
+
+      const index = selectedElements.length - 1
+
       const correctedOffset = {
-        x: clientX - selectedElement.offset.x,
-        y: clientY - selectedElement.offset.y,
+        x: clientX - selectedElements.offset.x,
+        y: clientY - selectedElements.offset.y,
       }
-      selectedElement.element.move(correctedOffset)
+
+      selectedElements.element.move(correctedOffset)
+
       const elementsCopy = [...ctx.elements]
-      elementsCopy[index] = selectedElement
+      elementsCopy[index] = selectedElements
       setCtx({ currentTool: ctx.currentTool, elements: elementsCopy })
+
+    } else if (action === 'selecting') {
+
 
     }
   };
@@ -93,7 +104,7 @@ export default function Canvas() {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       width={window.innerWidth}
-      height={window.innerHeight - 20}
+      height={window.innerHeight - 10}
     >
       Canvas
     </CanvasRoot>

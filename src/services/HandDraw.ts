@@ -1,6 +1,5 @@
 import { Drawable } from "roughjs/bin/core";
 import { RoughGenerator } from "roughjs/bin/generator";
-import { ADMITED_OFFSET } from "../constants";
 import { ICoord } from "../types";
 import DrawElement from "./Element";
 import { distance } from "./getElementAtPosition";
@@ -40,7 +39,7 @@ class HandDraw extends DrawElement {
         (distance({ x: x1, y: y1 }, clickedCoord) +
           distance({ x: x2, y: y2 }, clickedCoord));
 
-      if (Math.abs(distancia) <= ADMITED_OFFSET) return true;
+      if (Math.abs(distancia) <= 2) return true;
     }
     return false;
   }

@@ -1,1 +1,1 @@
-export type IAction = 'drawing' | 'selection' | 'none' | 'moving'
+export type IAction = 'drawing' | 'selecting' | 'none' | 'moving'

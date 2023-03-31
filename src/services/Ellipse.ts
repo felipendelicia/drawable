@@ -1,6 +1,5 @@
 import { Drawable } from "roughjs/bin/core";
 import { RoughGenerator } from "roughjs/bin/generator";
-import { ADMITED_OFFSET } from "../constants";
 import { ICoord } from "../types";
 import DrawElement from "./Element";
 
@@ -67,7 +66,7 @@ class Ellipse extends DrawElement {
         Math.pow(this.width / 2, 2) +
       Math.pow(clickedCoord.y - this.initCoord.y, 2) /
         Math.pow(this.height / 2, 2);
-    return offset <= ADMITED_OFFSET;
+    return offset <= 1;
   }
 
   move(moveCoord: ICoord) {
