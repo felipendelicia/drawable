@@ -11,8 +11,8 @@ function App() {
   return (
     <MainContext.Provider value={{ ctx, setCtx }}>
       <div className="App">
-        <Canvas />
-        <ToolBar />
+        <Canvas/>
+        <ToolBar/>
         <Message message="For now, only available for desktop"></Message>
       </div>
     </MainContext.Provider>

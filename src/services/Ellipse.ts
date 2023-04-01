@@ -1,6 +1,6 @@
 import { Drawable } from "roughjs/bin/core";
 import { RoughGenerator } from "roughjs/bin/generator";
-import { ICoord } from "../types";
+import { IBbox, ICoord } from "../types";
 import DrawElement from "./Element";
 
 class Ellipse extends DrawElement {
@@ -15,6 +15,7 @@ class Ellipse extends DrawElement {
     height: number;
     roughElement: Drawable;
   };
+  bBox: IBbox
 
   constructor(id: number, initCoord: ICoord) {
     super(id, initCoord);
@@ -29,6 +30,7 @@ class Ellipse extends DrawElement {
       this.height,
       this.cornerCoord
     );
+    this.bBox = this.getBbox()
   }
 
   create(
@@ -39,7 +41,12 @@ class Ellipse extends DrawElement {
     cornerCoord: ICoord
   ) {
     const generator = new RoughGenerator();
-    const roughElement = generator.ellipse(initCoord.x, initCoord.y, width, height);
+    const roughElement = generator.ellipse(
+      initCoord.x,
+      initCoord.y,
+      width,
+      height
+    );
     return { id, cornerCoord, initCoord, width, height, roughElement };
   }
 
@@ -58,6 +65,8 @@ class Ellipse extends DrawElement {
       this.height,
       this.cornerCoord
     );
+    this.bBox = this.getBbox()
+    return this.element
   }
 
   isWithinElement(clickedCoord: ICoord) {
@@ -70,20 +79,32 @@ class Ellipse extends DrawElement {
   }
 
   move(moveCoord: ICoord) {
-    this.cornerCoord = moveCoord
+    this.cornerCoord = moveCoord;
     const newCenter = {
-        x:  moveCoord.x,
-        y:  moveCoord.y,
-    }
+      x: moveCoord.x,
+      y: moveCoord.y,
+    };
     this.initCoord = newCenter;
 
     this.element = this.create(
-      this.id, //no
+      this.id,
       this.initCoord,
-      this.width, //no
-      this.height, //no
+      this.width,
+      this.height,
       this.cornerCoord
     );
+    this.bBox = this.getBbox()
+  }
+
+  getBbox() {
+    const radioW = this.width / 2;
+    const radioH = this.height / 2;
+    const corners = []
+    corners.push({x: this.initCoord.x + radioW, y: this.initCoord.y + radioH})
+    corners.push({x: this.initCoord.x + radioW, y: this.initCoord.y - radioH})
+    corners.push({x: this.initCoord.x - radioW, y: this.initCoord.y + radioH})
+    corners.push({x: this.initCoord.x - radioW, y: this.initCoord.y - radioH})
+    return {corners}
   }
 }
 
